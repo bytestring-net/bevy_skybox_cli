@@ -42,8 +42,11 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut meshes: Res
         // This is used to cast light and reflections from skybox
         EnvironmentMapLight {
             diffuse_map: asset_server.load("diffuse_map.ktx2"),
-            specular_map: asset_server.load("specular_map.ktx2"),
-            //specular_map: skybox_handle.clone(), //Here should be "radiance.ktx2" but it's broken in 'skylight'. Using the "skybox.ktx2" works jsut fine
+
+            // Here should be "specular_map.ktx2" but the export is broken in "bevy_skybox_cli". Using "skybox.ktx2" is PBR incorrect but it's just temporary replacement till I found fix.
+            // If you have custom specular map, use that instead.
+            specular_map: skybox_handle.clone(),
+            //specular_map: asset_server.load("specular_map.ktx2"),
             intensity: 900.0,
         },
     ));
