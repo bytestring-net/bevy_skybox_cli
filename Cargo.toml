@@ -1,0 +1,25 @@
+[workspace]
+  members = ["example"]
+
+[package]
+  name       = "bevy_skybox_cli"
+  authors    = ["Dominik Kaspar"]
+  version    = "0.0.1"
+  edition    = "2021"
+  license    = "MIT OR Apache-2.0"
+  repository = "https://github.com/bytestring-net/bevy_skybox_cli"
+  keywords   = ["bevy", "cli"]
+  categories = ["command-line-utilities", "multimedia::images", "game-development"]
+
+[dependencies]
+  clap          = { version = "4.5.4", features = ["derive"] }
+  image         = { version = "0.25.1" }
+  imagesize     = { version = "0.12.0" }
+  libktx-rs-sys = { version = "0.3.3+v4.0.0" }
+  regex         = { version = "1.10.4" }
+  thiserror     = { version = "1.0.58" }
+  tokio         = { version = "1.37.0", features = ["full"] }
+  wgpu          = { version = "0.19.3" }
+  zune-hdr      = { version = "0.4.0" }
+  futures-intrusive = { version = "0.5.0" }
+  bytemuck      = { version = "1.15.0", features = ["derive"] }
