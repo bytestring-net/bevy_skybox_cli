@@ -1,0 +1,1 @@
+cargo run --release example/assets/original_4k.hdr

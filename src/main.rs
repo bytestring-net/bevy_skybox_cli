@@ -156,14 +156,18 @@ async fn process_hdr(source: &str) -> Result<(), Error> {
         true
     ).await.unwrap();
 
-    // generate mipmaps for the environment map
+    // Generate mipmaps for the environment map
     let env_map = mipmap::generate_mipmaps(&device, &queue, &cubemap);
+
+    // Create a path from the argument
+    let path = match source.rsplit_once('/') {
+        Some((a, _)) => String::from(a),
+        None => String::from("."),
+    };
 
     // Download environment map data
     let env_map_data = download_cubemap(&device, &queue, &env_map).await.unwrap();
-    write_cubemap_to_ktx2(&env_map_data, wgpu::TextureFormat::Rgba16Float, cubemap_side, env_map.mip_level_count(), "skybox.ktx2");
-
-
+    write_cubemap_to_ktx2(&env_map_data, wgpu::TextureFormat::Rgba16Float, cubemap_side, env_map.mip_level_count(), &format!("{path}/skybox.ktx2"));
 
     // Hardcode parameters
     let bake_parameters = ibl::BakeParameters {
@@ -175,21 +179,19 @@ async fn process_hdr(source: &str) -> Result<(), Error> {
         hue_correction: 0.0,
     };
 
-
-
     // Calculate radiance
     let radiance = ibl::radiance(&device, &queue, &env_map, cubemap_side, &bake_parameters).await.unwrap();
 
     // Download radiance data
     let radiance_data = download_cubemap(&device, &queue, &radiance).await.unwrap();
-    write_cubemap_to_ktx2(&radiance_data, wgpu::TextureFormat::Rgba16Float, cubemap_side, radiance.mip_level_count(), "specular_map.ktx2");
+    write_cubemap_to_ktx2(&radiance_data, wgpu::TextureFormat::Rgba16Float, cubemap_side, radiance.mip_level_count(), &format!("{path}/specular_map.ktx2"));
 
     // Calculate irradiance
     let irradiance = ibl::irradiance(&device, &queue, &env_map, cubemap_side, &bake_parameters).await.unwrap();
 
     // Download irradiance data
     let irradiance_data = download_cubemap(&device, &queue, &irradiance).await.unwrap();
-    write_cubemap_to_ktx2(&irradiance_data, wgpu::TextureFormat::Rgba16Float, cubemap_side, 1, "diffuse_map.ktx2");
+    write_cubemap_to_ktx2(&irradiance_data, wgpu::TextureFormat::Rgba16Float, cubemap_side, 1, &format!("{path}/diffuse_map.ktx2"));
 
     Ok(())
 }
